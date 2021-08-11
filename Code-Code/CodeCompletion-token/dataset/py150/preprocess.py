@@ -8,7 +8,7 @@ from tokenize import tokenize, untokenize, COMMENT, STRING, NEWLINE, ENCODING, E
 from io import BytesIO
 import json
 
-lits = json.load(open("literals.json"))
+lits = json.load(open("literals.json", encoding="utf-8"))
 
 def process_string(token, special_chars={" ": "U+0020", ",": "U+002C"}):
     str_quote_options = ["'''", '"""', "'", '"']
@@ -41,11 +41,11 @@ def process_string(token, special_chars={" ": "U+0020", ",": "U+002C"}):
     )
 
 def py_tokenize(args, file_name, file_type):
-    file_paths = open(os.path.join(args.base_dir, file_name)).readlines()
-    wf = open(os.path.join(args.output_dir, f"{file_type}.txt"), 'w')
+    file_paths = open(os.path.join(args.base_dir, file_name), encoding="utf-8").readlines()
+    wf = open(os.path.join(args.output_dir, f"{file_type}.txt"), 'w', encoding="utf-8")
     for ct,path in enumerate(file_paths):
         try:
-            code = open(os.path.join(args.base_dir, path.strip())).read()
+            code = open(os.path.join(args.base_dir, path.strip()), encoding="utf-8").read()
             token_gen = tokenize(BytesIO(bytes(code, "utf8")).readline)
             out_tokens = []
             prev_eol = False
@@ -96,13 +96,13 @@ def main():
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
 
-    train_paths = open(os.path.join(args.base_dir, "python100k_train.txt")).readlines()[:-5000]
-    dev_paths = open(os.path.join(args.base_dir, "python100k_train.txt")).readlines()[-5000:]
-    wf = open(os.path.join(args.base_dir, "python95k_train.txt"), "w")
+    train_paths = open(os.path.join(args.base_dir, "python100k_train.txt"), encoding="utf-8").readlines()[:-5000]
+    dev_paths = open(os.path.join(args.base_dir, "python100k_train.txt"), encoding="utf-8").readlines()[-5000:]
+    wf = open(os.path.join(args.base_dir, "python95k_train.txt"), "w", encoding="utf-8")
     for path in train_paths:
         wf.write(path)
     wf.close()
-    wf = open(os.path.join(args.base_dir, "python5k_dev.txt"), "w")
+    wf = open(os.path.join(args.base_dir, "python5k_dev.txt"), "w", encoding="utf-8")
     for path in dev_paths:
         wf.write(path)
     wf.close()
